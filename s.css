@@ -1,4 +1,4 @@
-**,
+*,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -16,6 +16,14 @@ body {
 }
 
 #main {
-  width: 10rem;
-  height: 10rem;
+  width: fit-content;
+  height: fit-content;
+}
+
+.test {
+  height: 4rem;
+  width: 4rem;
+
+  border-radius: 1rem;
+  background-color: black;
 }
