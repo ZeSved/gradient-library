@@ -26,7 +26,7 @@ function movingGradient(action, mountedOn, colors, optional) {
             intervalId = setInterval(() => {
                 const newArr = [];
                 arr.forEach(c => {
-                    if (!c.hasBeenDuped && c.position >= 101) {
+                    if (!c.hasBeenDuped && c.position >= 101 + percentage) {
                         arr.unshift({ color: c.color, position: arr[0].position - percentage * 2, hasBeenDuped: false });
                         c.hasBeenDuped = true;
                     }

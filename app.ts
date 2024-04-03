@@ -33,7 +33,7 @@ function movingGradient(action: Choice, mountedOn: HTMLElement, colors: string[]
       intervalId = setInterval(() => {
         const newArr: string[] = []
         arr.forEach(c => {
-          if (!c.hasBeenDuped && c.position >= 101) {
+          if (!c.hasBeenDuped && c.position >= 101 + percentage) {
             arr.unshift({ color: c.color, position: arr[0].position - percentage * 2, hasBeenDuped: false })
             c.hasBeenDuped = true
           }
@@ -79,4 +79,39 @@ type CyclingColors = {
   color: string
   position: number
   hasBeenDuped: boolean
+}
+
+type Colors_name = 'Red' | 'Tan' | 'Aqua' | 'Blue' | 'Cyan' | 'Gold' | 'Gray' | 'Grey' | 'Lime' | 'Navy' | 'Peru' |
+  'Pink' | 'Plum' | 'Snow' | 'Teal' | 'Azure' | 'Beige' | 'Black' | 'Brown' | 'Coral' | 'Green' | 'Ivory' | 'Khaki' |
+  'Linen' | 'Olive' | 'Wheat' | 'White' | 'Bisque' | 'Indigo' | 'Maroon' | 'Orange' | 'Orchid' | 'Purple' | 'Salmon' |
+  'Sienna' | 'Silver' | 'Tomato' | 'Violet' | 'Crimson' | 'DarkRed' | 'DimGray' | 'DimGrey' | 'Fuchsia' | 'HotPink' |
+  'Magenta' | 'OldLace' | 'SkyBlue' | 'Thistle' | 'Cornsilk' | 'DarkBlue' | 'DarkCyan' | 'DarkGray' | 'DarkGrey' |
+  'DeepPink' | 'HoneyDew' | 'Lavender' | 'Moccasin' | 'SeaGreen' | 'SeaShell' | 'AliceBlue' | 'Burlywood' | 'CadetBlue' |
+  'Chocolate' | 'DarkGreen' | 'DarkKhaki' | 'FireBrick' | 'Gainsboro' | 'Goldenrod' | 'IndianRed' | 'LawnGreen' |
+  'LightBlue' | 'LightCyan' | 'LightGray' | 'LightGrey' | 'LightPink' | 'LimeGreen' | 'MintCream' | 'MistyRose' |
+  'OliveDrab' | 'OrangeRed' | 'PaleGreen' | 'PeachPuff' | 'RosyBrown' | 'RoyalBlue' | 'SlateBlue' | 'SlateGray' |
+  'SlateGrey' | 'SteelBlue' | 'Turquoise' | 'Aquamarine' | 'BlueViolet' | 'Chartreuse' | 'DarkOrange' | 'DarkOrchid' |
+  'DarkSalmon' | 'DarkViolet' | 'DodgerBlue' | 'GhostWhite' | 'LightCoral' | 'LightGreen' | 'MediumBlue' | 'PapayaWhip' |
+  'PowderBlue' | 'SandyBrown' | 'DarkMagenta' | 'DeepSkyBlue' | 'FloralWhite' | 'ForestGreen' | 'GreenYellow' | 'LightSalmon' |
+  'LightYellow' | 'NavajoWhite' | 'SaddleBrown' | 'SpringGreen' | 'AntiqueWhite' | 'DarkSeaGreen' | 'LemonChiffon' |
+  'LightSkyBlue' | 'MediumOrchid' | 'MediumPurple' | 'MidnightBlue' | 'DarkGoldenrod' | 'DarkSlateBlue' | 'DarkSlateGray' |
+  'DarkSlateGrey' | 'DarkTurquoise' | 'LavenderBlush' | 'LightSeaGreen' | 'PaleGoldenrod' | 'PaleTurquoise' | 'PaleVioletRed' |
+  'RebeccaPurple' | 'BlanchedAlmond' | 'CornflowerBlue' | 'DarkOliveGreen' | 'LightSlateGray' | 'LightSlateGrey' |
+  'LightSteelBlue' | 'MediumSeaGreen' | 'MediumSlateBlue' | 'MediumTurquoise' | 'MediumVioletRed' | 'MediumAquaMarine' |
+  'MediumSpringGreen' | 'LightGoldenrodYellow'
+
+type Colors_HEX = `#${string | number}${string | number}${string | number}${string | number}${string | number}${string | number}`
+
+type RGB_number = `${number}` | `${number}${number}` | `${number}${number}${number}`
+type Colors_RGB = `rgb(${RGB_number}, ${RGB_number}, ${RGB_number})`
+
+type Gradient = {
+  action: 'none'
+  mountedOn: HTMLElement
+  optional?: Optional
+} | {
+  action: 'rotate' | 'cycle'
+  mountedOn: HTMLElement
+  colors: string[]
+  optional?: Optional
 }
