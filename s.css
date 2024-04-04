@@ -21,8 +21,8 @@ body {
 }
 
 .test {
-  height: 30vh;
-  width: 30vw;
+  height: 3vh;
+  width: 5vw;
 
   border-radius: 1rem;
   background-color: black;

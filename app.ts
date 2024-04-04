@@ -1,55 +1,53 @@
 const div = document.getElementById('main')!
 
-movingGradient('cycle', div, ['red', 'blue', 'yellow', 'purple'], { padding: 100 })
+movingGradient({ animation: "rotate-y", colors: ['red', 'green'], mountedOn: div, optional: { padding: 100, border: 100 } })
 
 let isActive = false
 let deg = 90
 let intervalId: number
 
-div.style.background = `linear-gradient(${deg}deg, red 0%, blue 33%, yellow 66%, purple 100%)`
+div.style.background = `linear-gradient(${deg}deg, red 0%, green 100%)`
 
-function movingGradient(action: Choice, mountedOn: HTMLElement, colors: string[], optional?: Optional) {
+function movingGradient(gradient: Gradient) {
+  const { animation, colors, mountedOn, optional }: Gradient = gradient
+  const percentage = 100 / (colors.length - 1)
+  const arr: CyclingColors[] = []
+  const movementSpeed = animation !== 'none' ?
+    (optional?.speed === 'fast' ? 1 :
+      optional?.speed === 'medium' ? 10 :
+        optional?.speed === 'slow' ? 100 : 10) : 0
+
+  for (let i = 0; i < colors.length; i++) {
+    arr.push({ color: colors[i], position: percentage * i, hasBeenDuped: false })
+  }
+
   mountedOn.addEventListener('mouseover', () => {
     if (isActive) return
     isActive = true
 
-    if (action === 'rotate') {
+    if (animation === 'rotate-z') {
+      const color = colorsToGradient(colors, percentage)
+
       intervalId = setInterval(() => {
         deg === 360 ? deg = 1 : deg += 1
-        mountedOn.style.background = `linear-gradient(${deg}deg, red 0%, blue 100%)`
-      }, 1)
+
+        mountedOn.style.background = `linear-gradient(${deg}deg, ${color.join('')})`
+      }, movementSpeed)
     }
 
-    if (action === 'cycle') {
-      const percentage = 100 / colors.length
-      const arr: CyclingColors[] = []
-
-      for (let i = 0; i < colors.length; i++) {
-        arr.push({ color: colors[i], position: percentage * i, hasBeenDuped: false })
-      }
-
-      let gradient: string[] = []
-
+    if (animation === 'rotate-y' || animation === 'rotate-x') {
       intervalId = setInterval(() => {
-        const newArr: string[] = []
-        arr.forEach(c => {
-          if (!c.hasBeenDuped && c.position >= 101 + percentage) {
-            arr.unshift({ color: c.color, position: arr[0].position - percentage * 2, hasBeenDuped: false })
-            c.hasBeenDuped = true
-          }
+        mountedOn.style.background = `linear-gradient(${animation === 'rotate-x' ? 0 : 90}deg, ${rotateXYZ(arr, percentage).join('')})`
+      }, movementSpeed)
+    }
 
-          if (c.position >= 300 + percentage) {
-            arr.splice(arr.length - 1, 1)
-          }
+    if (animation === 'rotate-xyz') {
+      intervalId = setInterval(() => {
+        const colorArr = rotateXYZ(arr, percentage)
+        deg === 360 ? deg = 1 : deg += 1
 
-          c.position += 1
-          newArr.push(c.color + ` ${c.position}%${arr.indexOf(c) !== arr.length - 1 ? ', ' : ''}`)
-        })
-
-        gradient = newArr
-        console.log(gradient)
-        mountedOn.style.background = `linear-gradient(90deg, ${gradient.join('')})`
-      }, 10)
+        mountedOn.style.background = `linear-gradient(${deg}deg, ${colorArr.join('')})`
+      }, movementSpeed)
     }
   })
 
@@ -67,12 +65,42 @@ function movingGradient(action: Choice, mountedOn: HTMLElement, colors: string[]
   mountedOn.style.borderRadius = optional?.border ? optional.border.toString() + 'px' : `${children.style.borderRadius + mountedOn.style.padding}`
 }
 
-type Choice = 'rotate' | 'cycle'
+function rotateXYZ(arr: CyclingColors[], percentage: number) {
+  const newArr: string[] = []
+  arr.forEach(c => {
+    if (!c.hasBeenDuped && c.position >= 101 + percentage) {
+      arr.unshift({ color: c.color, position: arr[0].position - percentage * 3, hasBeenDuped: false })
+      c.hasBeenDuped = true
+    }
+
+    if (c.position >= 300 + percentage) {
+      arr.splice(arr.length - 1, 1)
+    }
+
+    c.position += 1
+    newArr.push(c.color + ` ${c.position}%${arr.indexOf(c) !== arr.length - 1 ? ', ' : ''}`)
+  })
+
+  return newArr
+}
+
+function colorsToGradient(colors: Colors, percentage: number) {
+  const newArr: string[] = []
+
+  for (let i = 0; i < colors.length; i++) {
+    newArr.push(colors[i] + ` ${percentage * i}%${i !== colors.length - 1 ? ', ' : ''}`)
+    console.log(newArr);
+  }
+
+  return newArr
+}
 
 type Optional = {
   border?: number
   padding?: number
   className?: string
+  speed?: number | 'slow' | 'medium' | 'fast'
+  degrees?: number
 }
 
 type CyclingColors = {
@@ -81,37 +109,16 @@ type CyclingColors = {
   hasBeenDuped: boolean
 }
 
-type Colors_name = 'Red' | 'Tan' | 'Aqua' | 'Blue' | 'Cyan' | 'Gold' | 'Gray' | 'Grey' | 'Lime' | 'Navy' | 'Peru' |
-  'Pink' | 'Plum' | 'Snow' | 'Teal' | 'Azure' | 'Beige' | 'Black' | 'Brown' | 'Coral' | 'Green' | 'Ivory' | 'Khaki' |
-  'Linen' | 'Olive' | 'Wheat' | 'White' | 'Bisque' | 'Indigo' | 'Maroon' | 'Orange' | 'Orchid' | 'Purple' | 'Salmon' |
-  'Sienna' | 'Silver' | 'Tomato' | 'Violet' | 'Crimson' | 'DarkRed' | 'DimGray' | 'DimGrey' | 'Fuchsia' | 'HotPink' |
-  'Magenta' | 'OldLace' | 'SkyBlue' | 'Thistle' | 'Cornsilk' | 'DarkBlue' | 'DarkCyan' | 'DarkGray' | 'DarkGrey' |
-  'DeepPink' | 'HoneyDew' | 'Lavender' | 'Moccasin' | 'SeaGreen' | 'SeaShell' | 'AliceBlue' | 'Burlywood' | 'CadetBlue' |
-  'Chocolate' | 'DarkGreen' | 'DarkKhaki' | 'FireBrick' | 'Gainsboro' | 'Goldenrod' | 'IndianRed' | 'LawnGreen' |
-  'LightBlue' | 'LightCyan' | 'LightGray' | 'LightGrey' | 'LightPink' | 'LimeGreen' | 'MintCream' | 'MistyRose' |
-  'OliveDrab' | 'OrangeRed' | 'PaleGreen' | 'PeachPuff' | 'RosyBrown' | 'RoyalBlue' | 'SlateBlue' | 'SlateGray' |
-  'SlateGrey' | 'SteelBlue' | 'Turquoise' | 'Aquamarine' | 'BlueViolet' | 'Chartreuse' | 'DarkOrange' | 'DarkOrchid' |
-  'DarkSalmon' | 'DarkViolet' | 'DodgerBlue' | 'GhostWhite' | 'LightCoral' | 'LightGreen' | 'MediumBlue' | 'PapayaWhip' |
-  'PowderBlue' | 'SandyBrown' | 'DarkMagenta' | 'DeepSkyBlue' | 'FloralWhite' | 'ForestGreen' | 'GreenYellow' | 'LightSalmon' |
-  'LightYellow' | 'NavajoWhite' | 'SaddleBrown' | 'SpringGreen' | 'AntiqueWhite' | 'DarkSeaGreen' | 'LemonChiffon' |
-  'LightSkyBlue' | 'MediumOrchid' | 'MediumPurple' | 'MidnightBlue' | 'DarkGoldenrod' | 'DarkSlateBlue' | 'DarkSlateGray' |
-  'DarkSlateGrey' | 'DarkTurquoise' | 'LavenderBlush' | 'LightSeaGreen' | 'PaleGoldenrod' | 'PaleTurquoise' | 'PaleVioletRed' |
-  'RebeccaPurple' | 'BlanchedAlmond' | 'CornflowerBlue' | 'DarkOliveGreen' | 'LightSlateGray' | 'LightSlateGrey' |
-  'LightSteelBlue' | 'MediumSeaGreen' | 'MediumSlateBlue' | 'MediumTurquoise' | 'MediumVioletRed' | 'MediumAquaMarine' |
-  'MediumSpringGreen' | 'LightGoldenrodYellow'
-
-type Colors_HEX = `#${string | number}${string | number}${string | number}${string | number}${string | number}${string | number}`
-
+type Colors_name = Lowercase<'Red' | 'Tan' | 'Aqua' | 'Blue' | 'Cyan' | 'Gold' | 'Gray' | 'Grey' | 'Lime' | 'Navy' | 'Peru' | 'Pink' | 'Plum' | 'Snow' | 'Teal' | 'Azure' | 'Beige' | 'Black' | 'Brown' | 'Coral' | 'Green' | 'Ivory' | 'Khaki' | 'Linen' | 'Olive' | 'Wheat' | 'White' | 'Bisque' | 'Indigo' | 'Maroon' | 'Orange' | 'Orchid' | 'Purple' | 'Salmon' | 'Sienna' | 'Silver' | 'Tomato' | 'Violet' | 'Crimson' | 'DarkRed' | 'DimGray' | 'DimGrey' | 'Fuchsia' | 'HotPink' | 'Magenta' | 'OldLace' | 'SkyBlue' | 'Thistle' | 'Cornsilk' | 'DarkBlue' | 'DarkCyan' | 'DarkGray' | 'DarkGrey' | 'DeepPink' | 'HoneyDew' | 'Lavender' | 'Moccasin' | 'SeaGreen' | 'SeaShell' | 'AliceBlue' | 'Burlywood' | 'CadetBlue' | 'Chocolate' | 'DarkGreen' | 'DarkKhaki' | 'FireBrick' | 'Gainsboro' | 'Goldenrod' | 'IndianRed' | 'LawnGreen' | 'LightBlue' | 'LightCyan' | 'LightGray' | 'LightGrey' | 'LightPink' | 'LimeGreen' | 'MintCream' | 'MistyRose' | 'OliveDrab' | 'OrangeRed' | 'PaleGreen' | 'PeachPuff' | 'RosyBrown' | 'RoyalBlue' | 'SlateBlue' | 'SlateGray' | 'SlateGrey' | 'SteelBlue' | 'Turquoise' | 'Aquamarine' | 'BlueViolet' | 'Chartreuse' | 'DarkOrange' | 'DarkOrchid' | 'DarkSalmon' | 'DarkViolet' | 'DodgerBlue' | 'GhostWhite' | 'LightCoral' | 'LightGreen' | 'MediumBlue' | 'PapayaWhip' | 'PowderBlue' | 'SandyBrown' | 'DarkMagenta' | 'DeepSkyBlue' | 'FloralWhite' | 'ForestGreen' | 'GreenYellow' | 'LightSalmon' | 'LightYellow' | 'NavajoWhite' | 'SaddleBrown' | 'SpringGreen' | 'AntiqueWhite' | 'DarkSeaGreen' | 'LemonChiffon' | 'LightSkyBlue' | 'MediumOrchid' | 'MediumPurple' | 'MidnightBlue' | 'DarkGoldenrod' | 'DarkSlateBlue' | 'DarkSlateGray' | 'DarkSlateGrey' | 'DarkTurquoise' | 'LavenderBlush' | 'LightSeaGreen' | 'PaleGoldenrod' | 'PaleTurquoise' | 'PaleVioletRed' | 'RebeccaPurple' | 'BlanchedAlmond' | 'CornflowerBlue' | 'DarkOliveGreen' | 'LightSlateGray' | 'LightSlateGrey' | 'LightSteelBlue' | 'MediumSeaGreen' | 'MediumSlateBlue' | 'MediumTurquoise' | 'MediumVioletRed' | 'MediumAquaMarine' | 'MediumSpringGreen' | 'LightGoldenrodYellow'>
+type HEX_symbol = Uppercase<string> | number
+type Colors_HEX = `#${HEX_symbol}${HEX_symbol}${HEX_symbol}${HEX_symbol}${HEX_symbol}${HEX_symbol}`
 type RGB_number = `${number}` | `${number}${number}` | `${number}${number}${number}`
 type Colors_RGB = `rgb(${RGB_number}, ${RGB_number}, ${RGB_number})`
+type Colors = (Colors_name | Colors_HEX | Colors_RGB)[]
 
 type Gradient = {
-  action: 'none'
   mountedOn: HTMLElement
-  optional?: Optional
-} | {
-  action: 'rotate' | 'cycle'
-  mountedOn: HTMLElement
-  colors: string[]
+  colors: Colors
+  animation: 'rotate-z' | 'rotate-xyz' | 'rotate-y' | 'rotate-x' | 'none'
   optional?: Optional
 }
