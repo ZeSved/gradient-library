@@ -1,9 +1,9 @@
 "use strict";
 const div = document.getElementById('main');
-movingGradient({ animation: "rotate-y", colors: ['red', 'green'], mountedOn: div, optional: { padding: 100, border: 100 } });
 let isActive = false;
 let deg = 90;
 let intervalId;
+movingGradient({ animation: "rotate-y", colors: ['red', 'green'], mountedOn: div, optional: { padding: 100, border: 100 } });
 div.style.background = `linear-gradient(${deg}deg, red 0%, green 100%)`;
 function movingGradient(gradient) {
     const { animation, colors, mountedOn, optional } = gradient;
@@ -52,27 +52,28 @@ function movingGradient(gradient) {
     optional?.className && mountedOn.classList.add(optional.className);
     mountedOn.style.padding = optional?.padding ? optional.padding.toString() + 'px' : '32px';
     mountedOn.style.borderRadius = optional?.border ? optional.border.toString() + 'px' : `${children.style.borderRadius + mountedOn.style.padding}`;
-}
-function rotateXYZ(arr, percentage) {
-    const newArr = [];
-    arr.forEach(c => {
-        if (!c.hasBeenDuped && c.position >= 101 + percentage) {
-            arr.unshift({ color: c.color, position: arr[0].position - percentage * 3, hasBeenDuped: false });
-            c.hasBeenDuped = true;
-        }
-        if (c.position >= 300 + percentage) {
-            arr.splice(arr.length - 1, 1);
-        }
-        c.position += 1;
-        newArr.push(c.color + ` ${c.position}%${arr.indexOf(c) !== arr.length - 1 ? ', ' : ''}`);
-    });
-    return newArr;
-}
-function colorsToGradient(colors, percentage) {
-    const newArr = [];
-    for (let i = 0; i < colors.length; i++) {
-        newArr.push(colors[i] + ` ${percentage * i}%${i !== colors.length - 1 ? ', ' : ''}`);
-        console.log(newArr);
+    function rotateXYZ(arr, percentage) {
+        const newArr = [];
+        arr.forEach(c => {
+            if (!c.hasBeenDuped && c.position >= 101 + percentage) {
+                arr.unshift({ color: c.color, position: arr[0].position - percentage * 3, hasBeenDuped: false });
+                c.hasBeenDuped = true;
+            }
+            if (c.position >= 300 + percentage) {
+                arr.splice(arr.length - 1, 1);
+            }
+            c.position += 1;
+            newArr.push(c.color + ` ${c.position}%${arr.indexOf(c) !== arr.length - 1 ? ', ' : ''}`);
+        });
+        return newArr;
     }
-    return newArr;
+    function colorsToGradient(colors, percentage) {
+        const newArr = [];
+        for (let i = 0; i < colors.length; i++) {
+            newArr.push(colors[i] + ` ${percentage * i}%${i !== colors.length - 1 ? ', ' : ''}`);
+            console.log(newArr);
+        }
+        return newArr;
+    }
 }
+module.exports = movingGradient;

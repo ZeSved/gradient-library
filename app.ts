@@ -1,11 +1,11 @@
 const div = document.getElementById('main')!
 
-movingGradient({ animation: "rotate-y", colors: ['red', 'green'], mountedOn: div, optional: { padding: 100, border: 100 } })
 
 let isActive = false
 let deg = 90
-let intervalId: number
+let intervalId: NodeJS.Timeout
 
+movingGradient({ animation: "rotate-y", colors: ['red', 'green'], mountedOn: div, optional: { padding: 100, border: 100 } })
 div.style.background = `linear-gradient(${deg}deg, red 0%, green 100%)`
 
 function movingGradient(gradient: Gradient) {
@@ -16,6 +16,7 @@ function movingGradient(gradient: Gradient) {
     (optional?.speed === 'fast' ? 1 :
       optional?.speed === 'medium' ? 10 :
         optional?.speed === 'slow' ? 100 : 10) : 0
+
 
   for (let i = 0; i < colors.length; i++) {
     arr.push({ color: colors[i], position: percentage * i, hasBeenDuped: false })
@@ -63,37 +64,39 @@ function movingGradient(gradient: Gradient) {
   optional?.className && mountedOn.classList.add(optional.className)
   mountedOn.style.padding = optional?.padding ? optional.padding.toString() + 'px' : '32px'
   mountedOn.style.borderRadius = optional?.border ? optional.border.toString() + 'px' : `${children.style.borderRadius + mountedOn.style.padding}`
-}
 
-function rotateXYZ(arr: CyclingColors[], percentage: number) {
-  const newArr: string[] = []
-  arr.forEach(c => {
-    if (!c.hasBeenDuped && c.position >= 101 + percentage) {
-      arr.unshift({ color: c.color, position: arr[0].position - percentage * 3, hasBeenDuped: false })
-      c.hasBeenDuped = true
-    }
+  function rotateXYZ(arr: CyclingColors[], percentage: number) {
+    const newArr: string[] = []
+    arr.forEach(c => {
+      if (!c.hasBeenDuped && c.position >= 101 + percentage) {
+        arr.unshift({ color: c.color, position: arr[0].position - percentage * 3, hasBeenDuped: false })
+        c.hasBeenDuped = true
+      }
 
-    if (c.position >= 300 + percentage) {
-      arr.splice(arr.length - 1, 1)
-    }
+      if (c.position >= 300 + percentage) {
+        arr.splice(arr.length - 1, 1)
+      }
 
-    c.position += 1
-    newArr.push(c.color + ` ${c.position}%${arr.indexOf(c) !== arr.length - 1 ? ', ' : ''}`)
-  })
+      c.position += 1
+      newArr.push(c.color + ` ${c.position}%${arr.indexOf(c) !== arr.length - 1 ? ', ' : ''}`)
+    })
 
-  return newArr
-}
-
-function colorsToGradient(colors: Colors, percentage: number) {
-  const newArr: string[] = []
-
-  for (let i = 0; i < colors.length; i++) {
-    newArr.push(colors[i] + ` ${percentage * i}%${i !== colors.length - 1 ? ', ' : ''}`)
-    console.log(newArr);
+    return newArr
   }
 
-  return newArr
+  function colorsToGradient(colors: Colors, percentage: number) {
+    const newArr: string[] = []
+
+    for (let i = 0; i < colors.length; i++) {
+      newArr.push(colors[i] + ` ${percentage * i}%${i !== colors.length - 1 ? ', ' : ''}`)
+      console.log(newArr);
+    }
+
+    return newArr
+  }
 }
+
+module.exports = movingGradient
 
 type Optional = {
   border?: number

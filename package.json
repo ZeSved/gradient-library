@@ -1,5 +1,10 @@
 {
-  "devDependencies": {
-    "typescript": "^5.4.3"
-  }
+	"devDependencies": {
+		"@types/node": "^20.12.4",
+		"typescript": "^5.4.3"
+	},
+	"name": "rotating-gradients",
+	"version": "1.0.0",
+	"description": "Rotate gradients easily",
+	"main": "app.js"
 }
