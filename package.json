@@ -4,7 +4,7 @@
 		"typescript": "^5.4.3"
 	},
 	"name": "rotating-gradients",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Rotate gradients easily",
 	"main": "app.js"
 }
