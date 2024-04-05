@@ -1,4 +1,4 @@
-function movingGradient(gradient: Gradient) {
+export function movingGradient(gradient: Gradient) {
   let isActive = false
   let deg = 90
   let intervalId: NodeJS.Timeout

@@ -1,4 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.movingGradient = void 0;
 function movingGradient(gradient) {
     let isActive = false;
     let deg = 90;
@@ -73,4 +75,5 @@ function movingGradient(gradient) {
         return newArr;
     }
 }
+exports.movingGradient = movingGradient;
 module.exports = movingGradient;
