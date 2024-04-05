@@ -1,4 +1,4 @@
-export function movingGradient(gradient: Gradient): void | React.ReactNode {
+export function movingGradient(gradient: Gradient) {
   let isActive = false
   let deg = 90
   let intervalId: NodeJS.Timeout
