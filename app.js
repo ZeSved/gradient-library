@@ -1,11 +1,8 @@
 "use strict";
-const div = document.getElementById('main');
-let isActive = false;
-let deg = 90;
-let intervalId;
-movingGradient({ animation: "rotate-y", colors: ['red', 'green'], mountedOn: div, optional: { padding: 100, border: 100 } });
-div.style.background = `linear-gradient(${deg}deg, red 0%, green 100%)`;
 function movingGradient(gradient) {
+    let isActive = false;
+    let deg = 90;
+    let intervalId;
     const { animation, colors, mountedOn, optional } = gradient;
     const percentage = 100 / (colors.length - 1);
     const arr = [];
