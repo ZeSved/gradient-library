@@ -1,7 +1,11 @@
+const elm = document.querySelector('test')
+
+movingGradient({ animation: 'rotate-y', colors: ['red', 'green'], mountedOn: elm! as HTMLDivElement })
+
 export function movingGradient(gradient: Gradient) {
   let isActive = false
   let deg = 90
-  let intervalId: NodeJS.Timeout
+  let intervalId: any
   const { animation, colors, mountedOn, optional }: Gradient = gradient
   const percentage = 100 / (colors.length - 1)
   const arr: CyclingColors[] = []

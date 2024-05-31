@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.movingGradient = void 0;
+const elm = document.querySelector('test');
+movingGradient({ animation: 'rotate-y', colors: ['red', 'green'], mountedOn: elm });
 function movingGradient(gradient) {
     let isActive = false;
     let deg = 90;
